@@ -18,7 +18,7 @@ Function name : get_blob_index
 	the first argument is the model
 	the second argument is the name of the blob
 ********************************************************/
-unsigned int get_blob_index(boost::shared_ptr< Net<float> > & net, char *query_blob_name)
+int get_blob_index(boost::shared_ptr< Net<float> > & net, char *query_blob_name)
 {
     std::string str_query(query_blob_name);    
     vector< string > const & blob_names = net->blob_names();
@@ -29,6 +29,7 @@ unsigned int get_blob_index(boost::shared_ptr< Net<float> > & net, char *query_b
             return i;
         } 
     }
+    return -1;
 }
 
 /********************************************************
@@ -57,10 +58,10 @@ void caffe_forward(boost::shared_ptr< Net<float> > & net, float *data_ptr)
                     sizeof(float) * input_blobs->count());
             break;
 //if you haven't installed CUDA, comment this case
-        case Caffe::GPU:
+        /*case Caffe::GPU:
             cudaMemcpy(input_blobs->mutable_gpu_data(), data_ptr,
             sizeof(float) * input_blobs->count(), cudaMemcpyHostToDevice);
-            break;
+            break;*/
 //comment to here              
         default: break;
     } 
@@ -71,16 +72,16 @@ void caffe_forward(boost::shared_ptr< Net<float> > & net, float *data_ptr)
 //! Note: data_ptr指向已经处理好（去均值的，符合网络输入图像的长宽和Batch Size）的数据
 int main()
 {
-    char proto[100] = "/home/jachinshen/Apps/caffe/examples/cpp_minst/lenet_deploy.prototxt"; /* 加载CaffeNet的配置 */
+    char proto[100] = "/home/jachinshen/Apps/caffe/examples/cpp_mnist/lenet_deploy.prototxt"; /* 加载CaffeNet的配置 */
     Phase phase = TEST; /* or TRAIN */
     Caffe::set_mode(Caffe::CPU);
     boost::shared_ptr< Net<float> > net(new caffe::Net<float>(proto, phase));
-    char model[100] = "/home/jachinshen/Apps/caffe/examples/cpp_minst/lenet_iter_10000.caffemodel";//load arguments of model    
+    char model[100] = "/home/jachinshen/Apps/caffe/examples/cpp_mnist/lenet_iter_10000.caffemodel";//load arguments of model    
     net->CopyTrainedLayersFrom(model);
 
-    Mat img_raw = imread("/home/jachinshen/Apps/caffe/examples/cpp_minst/_00175.png", 1); 
-    Mat img;
-    cvtColor(img_raw, img, CV_BGR2GRAY);
+    Mat img = imread("/home/jachinshen/Apps/caffe/examples/cpp_mnist/_00175.png", 0); 
+    //Mat img;
+    //cvtColor(img_raw, img, CV_BGR2GRAY);
     //Mat data(28, 28, CV_32FC1);
     resize(img, img, Size(28, 28));
     threshold(img, img, 128, 1, THRESH_BINARY_INV);
