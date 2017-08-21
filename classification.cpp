@@ -108,7 +108,7 @@ int main()
     unsigned int blob_id = get_blob_index(net, query_blob_name);
 
     boost::shared_ptr<Blob<float> > blob = net->blobs()[blob_id];
-    unsigned int num_data = blob->count(); /* NCHW=10x96x55x55 */
+    unsigned int num_data = blob->count(); 
     std::cout<<"data number:"<<num_data<<std::endl;
     const float *blob_ptr = (const float *) blob->cpu_data();//get pointer to result
     /*for( int i=0; i<28; i++)
