@@ -90,7 +90,7 @@ int main()
     //cout<< img<<endl;
     //normalize(data, data, 0.0, 1.0, NORM_MINMAX);
 
-    float data_ptr[784];//for data layer
+    float data_ptr[784];//for data
     uchar* p_data;
     for( int i=0; i<28; i++)
     {
